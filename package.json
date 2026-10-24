@@ -1,0 +1,51 @@
+{
+  "name": "galactic-spacefarer",
+  "version": "1.0.0",
+  "type": "module",
+  "dependencies": {
+    "@sap/cds": "^10",
+    "nodemailer": "^10.2.1"
+  },
+  "devDependencies": {
+    "@cap-js/sqlite": "^3",
+    "cds-plugin-ui5": "^0.17.0"
+  },
+  "scripts": {
+    "start": "cds-serve",
+    "watch-spacefarers": "cds watch --open com.antal.galactic.spacefarers/index.html?sap-ui-xx-viewCache=false --livereload false"
+  },
+  "private": true,
+  "workspaces": [
+    "app/*"
+  ],
+  "sapux": [
+    "app/spacefarers"
+  ],
+  "cds": {
+    "requires": {
+      "auth": {
+        "kind": "mocked",
+        "users": {
+          "antonie": {
+            "password": "antonie15",
+            "roles": [
+              "Commander"
+            ] , "attr": { "planet": "Mars" }
+          },
+          "bluey": {
+            "password": "bluey",
+            "roles": [
+              "Commander"
+            ] , "attr": { "planet": "Plutoin" }
+          },
+          "diego": {
+            "password": "diego",
+            "roles": [
+              "Viewer"
+            ] , "attr": { "planet": "Mars" }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,6 @@
+PATCH http://localhost:4004/odata/v4/galactic/Spacefarers(dddddddd-dddd-dddd-dddd-dddddddddddd)
+Content-Type: application/json
+
+{
+  "spacesuitColor": "Pink"
+}
