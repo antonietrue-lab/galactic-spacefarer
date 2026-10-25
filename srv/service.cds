@@ -3,10 +3,13 @@ using galactic from '../db/schema';
 service SpacefarerService @(path: '/spacefarer', requires: 'authenticated-user') {
 
   @odata.draft.enabled
-  @restrict: [
-    { grant: 'READ', to: ['Viewer','Commander'], where: 'originPlanet_code = $user.planet' },
-    { grant: ['CREATE','UPDATE','DELETE'], to: 'Commander' }
-  ]
+@restrict: [
+  { grant: 'READ', to: ['Viewer','Commander'], where: 'originPlanet_code = $user.planet' },
+  { grant: 'CREATE', to: 'Commander' },
+  { grant: ['UPDATE','DELETE'], to: 'Commander', where: 'originPlanet_code = $user.planet' },
+  { grant: ['NEW','EDIT','SAVE'], to: 'Commander' }
+]
+  
   entity Spacefarers as projection on galactic.Spacefarers {
     *,
     originPlanet.name as originPlanetName : String,

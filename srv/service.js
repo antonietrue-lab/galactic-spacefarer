@@ -11,7 +11,7 @@ export default class SpacefarerService extends cds.ApplicationService {
       const d = req.data;
 
       if (d.wormholeNavigationSkill != null &&
-          (d.wormholeNavigationSkill < 1 || d.wormholeNavigationSkill > 10)) {
+        (d.wormholeNavigationSkill < 1 || d.wormholeNavigationSkill > 10)) {
         return req.error(400, 'Wormhole navigation skill must be between 1 and 10', 'wormholeNavigationSkill');
       }
       if (d.stardustCollection != null && d.stardustCollection < 0) {
@@ -22,17 +22,43 @@ export default class SpacefarerService extends cds.ApplicationService {
       d.stardustCollection ??= 100;
       if (d.wormholeNavigationSkill >= 8) d.stardustCollection += 50;
 
+      if (d.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(d.email)) {
+        return req.error(400, 'Invalid email address format! (spacefarer@example.com)', 'email');
+      }
+
       if (!d.originPlanet_code) d.originPlanet_code = req.user.attr?.planet;
     });
 
-    this.after('CREATE', Spacefarers, async (data) => {
+    const PROTECTED = ['name', 'email', 'originPlanet_code', 'department_code',
+      'position_code', 'wormholeNavigationSkill'];
+
+    this.before('UPDATE', Spacefarers, async req => {
+      const { Spacefarers: DbSpacefarers } = cds.entities('galactic');
+      const current = await cds.tx(req).run(
+        SELECT.one.from(DbSpacefarers).where({ ID: req.data.ID })
+      );
+      if (!current) return;
+
+      const changed = PROTECTED.filter(f => f in req.data && req.data[f] !== current[f]);
+      if (changed.length) {
+        return req.reject(400, `Only stardust collection and spacesuit color can be modified (${changed.join(', ')})`);
+      }
+    });
+
+    this.after('CREATE', Spacefarers, async (data, req) => {
       try {
+        const { Spacefarers: DbSpacefarers } = cds.entities('galactic');
+        const id = data?.ID ?? req.data?.ID;
+        const sf = await cds.tx(req).run(
+          SELECT.one.from(DbSpacefarers).where({ ID: id })
+        );
+
         const transport = nodemailer.createTransport({ jsonTransport: true });
         const info = await transport.sendMail({
           from: 'mission@spaceadventures.com',
-          to: data.email,
+          to: sf.email,
           subject: 'Welcome aboard, Spacefarer, you did it!',
-          text: `Congratulations ${data.name}! Your adventure begins now, let's meet in the ship!`
+          text: `Congratulations ${sf.name}! Your adventure begins now, let's meet in the ship!`
         });
         LOG.info('Welcome mail:', info.message);
       } catch (e) {

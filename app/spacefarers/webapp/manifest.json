@@ -115,7 +115,8 @@
                   "tableSettings": {
                     "type": "ResponsiveTable",
                     "creationMode": {
-                      "name": "NewPage"
+                      "name": "CreationDialog",
+                      "creationFields": "name,email,originPlanet_code,department_code,position_code,stardustCollection,wormholeNavigationSkill,spacesuitColor"
                     }
                   }
                 }
