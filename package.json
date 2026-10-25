@@ -28,23 +28,24 @@
         "users": {
           "antonie": {
             "password": "antonie15",
-            "roles": [
-              "Commander"
-            ] , "attr": { "planet": "Mars" }
+            "roles": ["Commander"],
+            "attr": { "planet": "Mars" }
           },
           "bluey": {
             "password": "bluey",
-            "roles": [
-              "Commander"
-            ] , "attr": { "planet": "Plutoin" }
+            "roles": ["Commander"],
+            "attr": { "planet": "Plutoin" }
           },
           "diego": {
             "password": "diego",
-            "roles": [
-              "Viewer"
-            ] , "attr": { "planet": "Mars" }
+            "roles": ["Viewer"],
+            "attr": { "planet": "Mars" }
           }
         }
+      },
+      "db": {
+        "kind": "sqlite",
+        "credentials": { "url": "db.sqlite" }
       }
     }
   }
